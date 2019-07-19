@@ -24,11 +24,11 @@
 
 <pre>~$ wget https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.1.tar.gz</pre>
 
-<pre>~$ wget https://github.com/jamesbiv/ncurses-emscripten/ncurses-6.1_emscripten.patch</pre>
+<pre>~$ wget ~$ wget https://raw.githubusercontent.com/jamesbiv/ncurses-emscripten/master/ncurses-6.1_emscripten.patch</pre>
 
 <pre>~$ tar -xzvf ncurses-6.1.tar.gz</pre>
 
-<p><b>Note:</b> Because this is a source level patch make sure the patch is in the directory before the installed directory. For example, if the directory for Ncurses is <em>/home/user/ncurses-6.1</em> then make sure the patch is located at <em>/home/user/ncurses-6.1_emscripten.patch</em>.</p>
+<p><b>Note:</b> Because this is a source tree level patch make sure the patch is in the directory before the installed directory. For example, if the directory for Ncurses is <em>/home/user/ncurses-6.1</em> then make sure the patch is located at <em>/home/user/ncurses-6.1_emscripten.patch</em>.</p>
 
 <pre>~$ patch -p0 < ncurses-6.1_emscripten.patch</pre>
 
@@ -36,23 +36,23 @@
 
 <h3>Configure and make the native components</h3>
 
-<pre>~$ ./configure --prefix=`pwd`/build</pre>
-
 <p><b>Note:</b> Using <em>--prefix</em> defines the installation path for Ncurses. Feel free to change <em>--prefix</em> to anything you wish, just make sure you specify the same directory below when calling <em>emconfigure</em>. Further, it’s recommended to use <em>--prefix</em> because you really don't want this to be a global library either way.</p>
+
+<pre>~$ ./configure --prefix=`pwd`/build</pre>
 
 <pre>~$ make && make install</pre>
 
 <h3>Configure and make the Emscripten components</h3>
 
-<pre>~$ emconfigure ./configure --prefix=`pwd`/build</pre>
+<p><b>Note:</b> Using <em>--prefix</em> defines the installation path for Ncurses. Make sure you use the same path you've described above.<p>
 
-<p><b>Important note:</b> Using <em>--prefix</em> defines the installation path for Ncurses. Make sure you use the same path you've described above.<p>
+<pre>~$ emconfigure ./configure --prefix=`pwd`/build</pre>
 
 <h3>Modifying the Makefiles for Emscripten</h3>
 
 <pre>~$ nano -w ./Makefile</pre>
 
-<p>Comment out the following using <b>#</b> to reflect the following:</p> 
+<p>Comment out the following lines of code using <b>#</b> to reflect the following:</p> 
 
 <pre>
 Line 113
@@ -71,7 +71,7 @@ Line 122
 
 <pre>~$ nano -w ./ncurses/Makefile</pre>
 
-<p>Comment out the following using <b>#</b> to reflect the following:</p> 
+<p>Comment out the following lines of code using <b>#</b> to reflect the following:</p> 
 
 <p><strong>From line 233</strong></p>
 
@@ -91,7 +91,7 @@ Line 122
 #       $(BUILD_CC) -o $@ $(BUILD_CPPFLAGS) $(BUILD_CCFLAGS) $(srcdir)/report_offsets.c $(BUILD_LDFLAGS) $(BUILD_LIBS)
 </pre>
 
-<p>Comment out the following <u>in the same Makefile</u> using <b>#</b> to reflect the following:</p> 
+<p>Comment out the following lines of code <em>in the same Makefile</underline></em> using <b>#</b> to reflect the following:</p> 
 
 <p><strong>From line 283</strong></p>
 
@@ -111,6 +111,6 @@ Line 122
 
 <pre>~$ emmake make && emmake make install</pre>
 
-<pre>~$ cd build <em>(or whatever directory you've asked it too install too)</em></pre> 
+<pre>~$ cd build <em>(or whatever directory you've asked it to install too)</em></pre> 
 
 
