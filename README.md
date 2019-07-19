@@ -24,7 +24,7 @@
 
 <pre>~$ wget https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.1.tar.gz</pre>
 
-<pre>~$ wget https://github.com/jamesbiv/ncurses-emscripten/ncurses-6.1_emscripten.patch</pre>
+<pre>~$ wget https://raw.githubusercontent.com/jamesbiv/ncurses-emscripten/master/ncurses-6.1_emscripten.patch</pre>
 
 <pre>~$ tar -xzvf ncurses-6.1.tar.gz</pre>
 
