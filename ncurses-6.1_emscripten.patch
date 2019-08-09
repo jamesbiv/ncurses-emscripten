@@ -16,8 +16,8 @@ diff -Naur ncurses-6.1/ncurses/curses.priv.h ncurses-6.1_emscripten/ncurses/curs
 +  char* data = getenv(name);\
 +  int length = strlen(data);\
 +  char* dest = (char*)malloc(length+1);\
-+  dest[length+1] = '\0';\
 +  strncpy(dest, data, length);\
++  dest[length+1] = '\0';\
 +  dest;\
 +})
 +#endif

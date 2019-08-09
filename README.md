@@ -2,15 +2,17 @@
 
 <h2>Introduction</h2>
 
-<p>Here you’ll find the installation instructions and the patch required to compile ncurses 6.1+ for Emscripten.</p>
+<p>Here you’ll find the installation instructions and patch required to compile ncurses 6.1+ for Emscripten.</p>
 
-<p>First, before using this patched version of ncurses it's important that code linking or compiling from this repository leave <em>-s ASSERTIONS=1</em> enabled, however, further debuging of ncurses can resolve this issue if need be.</p>
+<p>Please take note of the following considerations:</p>
 
-<p>Second, there is no Makefile patching or modifications done to the make process. Instructions to modifying the relevant Makefiles are below. My aim here was to create a simple way to keep patching and debugging ncurses for Emscripten.</p>
+<ul>
+<li>Before using this patched version of ncurses it's important that code linking or compiling from this repository use <em>-s ASSERTIONS=1</em> as further debugging of this library is required.</li>
+<li>The patch contains a redeclaration of <em>getenv()</em> from <em>stdlib.h</em> which solves the problem described in <a href="https://github.com/emscripten-core/emscripten/issues/6778" target="_blank">issue #6778</a>.</li>
+<li>There is no Makefile patching done to the make process itself and since the build requires several native applications to be compiled the make process is not as straightforward as other libraries or applications. Creating a companion make process for both the native and Emscripten elements would be ideal but now for we are just changing the make process manually. Instructions to modifying the relevant Makefiles are below.</p>
+</ul>
 
-<p>Since you have to build several native applications to get ncurses to work properly the make process is not as straightforward as other libraries or applications. Therefore creating a companion make process for both native and Emscription together would be big time saver but for now this manually does the job just fine.</p>
-
-<p>Lastly, some of this work can be credited to <a href="https://github.com/ilyaigpetrov" target="_blank">ilyaigpetrov</a> found in his repository (<a href="https://github.com/ilyaigpetrov/ncurses-for-emscripten" target="_blank">ilyaigpetrov/ncurses-for-emscripten</a>).</p>
+<p>Lastly, a large part of this work can be credited to <a href="https://github.com/ilyaigpetrov" target="_blank">ilyaigpetrov</a> found in his repository (<a href="https://github.com/ilyaigpetrov/ncurses-for-emscripten" target="_blank">ilyaigpetrov/ncurses-for-emscripten</a>).</p>
 
 <p>Also, it’s worth noting that there are several other projects of a curses nature out there and if you’re looking at the most optimal solution for curses for Emscripten each of them have their merits.</p>
 
@@ -22,7 +24,7 @@
 
 <h2>Installation</h2>
 
-<p>It's recommended to create a seperate directory to build this project in. For example <em>ncurses-emscripten/</em>.
+<p>It's recommended to create a separate directory to build this project in. For example <em>ncurses-emscripten/</em>.
 
 <h3>Downloading and patching ncurses</h3>
 
@@ -95,7 +97,7 @@ Line 122
 #       $(BUILD_CC) -o $@ $(BUILD_CPPFLAGS) $(BUILD_CCFLAGS) $(srcdir)/report_offsets.c $(BUILD_LDFLAGS) $(BUILD_LIBS)
 </pre>
 
-<p>Comment out the following lines of code <em>in the same Makefile</underline></em> using <b>#</b> to reflect the following:</p> 
+<p>Comment out the following lines of code <em>in the same Makefile</em> using <b>#</b> to reflect the following:</p> 
 
 <p><strong>From line 283</strong></p>
 
