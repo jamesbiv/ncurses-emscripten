@@ -35,7 +35,7 @@ LANGUAGE=C;	export LANGUAGE
 LC_ALL=C;	export LC_ALL
 LC_CTYPE=C;	export LC_CTYPE
 
-prefix="/home/james/Desktop/ncurses-emscripten/ncurses-6.1/build"
+prefix="/home/james/Desktop/ncurses-emscripten2/ncurses-6.1/build"
 exec_prefix="${prefix}"
 
 bindir="${exec_prefix}/bin"
@@ -160,10 +160,10 @@ ENDECHO
 		echo "${mandir}"
 		;;
 	--terminfo)
-		echo "/home/james/Desktop/ncurses-emscripten/ncurses-6.1/build/share/terminfo"
+		echo "/home/james/Desktop/ncurses-emscripten2/ncurses-6.1/build/share/terminfo"
 		;;
 	--terminfo-dirs)
-		echo "/home/james/Desktop/ncurses-emscripten/ncurses-6.1/build/share/terminfo"
+		echo "/home/james/Desktop/ncurses-emscripten2/ncurses-6.1/build/share/terminfo"
 		;;
 	--termpath)
 		echo ""
