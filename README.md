@@ -2,7 +2,7 @@
 
 <h2>Introduction</h2>
 
-<p>Here you’ll find the installation instructions and patch required to compile ncurses 6.1+ for Emscripten.</p>
+<p>Here you’ll find the installation instructions and patch required to compile ncurses 6.3+ for Emscripten.</p>
 
 <p>Please take note of the following considerations:</p>
 
@@ -28,17 +28,17 @@
 
 <h3>Downloading and patching ncurses</h3>
 
-<pre>~$ wget https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.1.tar.gz</pre>
+<pre>~$ wget https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.3.tar.gz</pre>
 
-<pre>~$ wget https://raw.githubusercontent.com/jamesbiv/ncurses-emscripten/master/ncurses-6.1_emscripten.patch</pre>
+<pre>~$ wget https://raw.githubusercontent.com/jamesbiv/ncurses-emscripten/master/ncurses-6.3_emscripten.patch</pre>
 
-<pre>~$ tar -xzvf ncurses-6.1.tar.gz</pre>
+<pre>~$ tar -xzvf ncurses-6.3.tar.gz</pre>
 
-<p><b>Note:</b> Because this is a source tree level patch make sure the patch is in the directory before the installed directory. For example, if the directory for ncurses is <em>/home/user/ncurses-6.1</em> then make sure the patch is located at <em>/home/user/ncurses-6.1_emscripten.patch</em>.</p>
+<p><b>Note:</b> Because this is a source tree level patch make sure the patch is in the directory before the installed directory. For example, if the directory for ncurses is <em>/home/user/ncurses-6.3</em> then make sure the patch is located at <em>/home/user/ncurses-6.3_emscripten.patch</em>.</p>
 
-<pre>~$ patch -p0 < ncurses-6.1_emscripten.patch</pre>
+<pre>~$ patch -p0 < ncurses-6.3_emscripten.patch</pre>
 
-<pre>~$ cd ncurses-6.1</pre>
+<pre>~$ cd ncurses-6.3</pre>
 
 <h3>Configure and make the native components</h3>
 
@@ -58,28 +58,28 @@
 
 <pre>~$ nano -w ./Makefile</pre>
 
-<p>Comment out the following lines of code using <b>#</b> to reflect the following:</p> 
+<p>Comment out the following lines of code using <b>#</b> to reflect the following:</p>
 
 <pre>
-Line 113
+Line 131
 #cd man && ${MAKE} ${TOP_MFLAGS} $@
-Line 116
+Line 134
 #cd progs && ${MAKE} ${TOP_MFLAGS} $@
-Line 120
+Line 138
 #cd test && ${MAKE} ${TOP_MFLAGS} $@
-Line 121
+Line 139
 #cd misc && ${MAKE} ${TOP_MFLAGS} $@
-Line 122
+Line 140
 #cd c++ && ${MAKE} ${TOP_MFLAGS} $@
 </pre>
 
-<p>Save and exit nano</p> 
+<p>Save and exit nano</p>
 
 <pre>~$ nano -w ./ncurses/Makefile</pre>
 
-<p>Comment out the following lines of code using <b>#</b> to reflect the following:</p> 
+<p>Comment out the following lines of code using <b>#</b> to reflect the following:</p>
 
-<p><strong>From line 233</strong></p>
+<p><strong>From line 256</strong></p>
 
 <pre>
 #make_keys$(BUILD_EXEEXT) : \
@@ -97,9 +97,9 @@ Line 122
 #       $(BUILD_CC) -o $@ $(BUILD_CPPFLAGS) $(BUILD_CCFLAGS) $(srcdir)/report_offsets.c $(BUILD_LDFLAGS) $(BUILD_LIBS)
 </pre>
 
-<p>Comment out the following lines of code <em>in the same Makefile</em> using <b>#</b> to reflect the following:</p> 
+<p>Comment out the following lines of code <em>in the same Makefile</em> using <b>#</b> to reflect the following:</p>
 
-<p><strong>From line 283</strong></p>
+<p><strong>From line 315</strong></p>
 
 <pre>
 #       -rm -f make_keys$(BUILD_EXEEXT)
@@ -107,7 +107,7 @@ Line 122
 #       -rm -f report_offsets$(BUILD_EXEEXT)
 </pre>
 
-<p>Save and exit nano</p> 
+<p>Save and exit nano</p>
 
 <h3>Compiling and installing for Emscripten</h3>
 
@@ -117,7 +117,4 @@ Line 122
 
 <pre>~$ emmake make && emmake make install</pre>
 
-<pre>~$ cd build <em>(or whatever directory you've asked it to install too)</em></pre> 
-
-
-
+<pre>~$ cd build <em>(or whatever directory you've asked it to install too)</em></pre>
