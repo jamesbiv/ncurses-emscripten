@@ -1,5 +1,6 @@
 /****************************************************************************
- * Copyright (c) 1998-2012,2017 Free Software Foundation, Inc.              *
+ * Copyright 2018-2020,2021 Thomas E. Dickey                                *
+ * Copyright 1998-2012,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -33,7 +34,7 @@
  ****************************************************************************/
 
 /*
- * $Id: tic.h,v 1.75 2017/07/29 23:21:06 tom Exp $
+ * $Id: tic.h,v 1.84 2021/08/21 00:24:45 tom Exp $
  *	tic.h - Global variables and structures for the terminfo compiler.
  */
 
@@ -93,7 +94,7 @@ extern "C" {
 
 #define IS_TIC_MAGIC(p)	(LOW_MSB(p) == MAGIC || LOW_MSB(p) == MAGIC2)
 
-#define quick_prefix(s) (!strncmp((s), "b64:", 4) || !strncmp((s), "hex:", 4))
+#define quick_prefix(s) (!strncmp((s), "b64:", (size_t)4) || !strncmp((s), "hex:", (size_t)4))
 
 /*
  * The "maximum" here is misleading; XSI guarantees minimum values, which a
@@ -215,6 +216,21 @@ struct alias
 #define NOTFOUND	((struct name_table_entry *) 0)
 
 /*
+ * The file comp_userdefs.c contains an array of these structures, one per
+ * possible capability.  These are indexed by a hash table array of pointers to
+ * the same structures for use by the parser.
+ */
+struct user_table_entry
+{
+	const char *ute_name;	/* name to hash on */
+	int	ute_type;	/* mask (BOOLEAN, NUMBER, STRING) */
+	unsigned ute_argc;	/* number of parameters */
+	unsigned ute_args;	/* bit-mask for string parameters */
+	HashValue ute_index;	/* index of associated variable in its array */
+	HashValue ute_link;	/* index in table of next hash, or -1 */
+};
+
+/*
  * The casts are required for correct sign-propagation with systems such as
  * AIX, IRIX64, Solaris which default to unsigned characters.  The C standard
  * leaves this detail unspecified.
@@ -266,6 +282,8 @@ extern NCURSES_EXPORT(const struct alias *) _nc_get_alias_table (bool);
 /* comp_hash.c: name lookup */
 extern NCURSES_EXPORT(struct name_table_entry const *) _nc_find_type_entry
 	(const char *, int, bool);
+extern NCURSES_EXPORT(struct user_table_entry const *) _nc_find_user_entry
+	(const char *);
 
 /* comp_scan.c: lexical analysis */
 extern NCURSES_EXPORT(int)  _nc_get_token (bool);
@@ -284,16 +302,20 @@ extern NCURSES_EXPORT_VAR(long) _nc_start_line;
 
 /* comp_error.c: warning & abort messages */
 extern NCURSES_EXPORT(const char *) _nc_get_source (void);
-extern NCURSES_EXPORT(void) _nc_err_abort (const char *const,...) GCC_PRINTFLIKE(1,2) GCC_NORETURN;
+extern GCC_NORETURN NCURSES_EXPORT(void) _nc_err_abort (const char *const,...) GCC_PRINTFLIKE(1,2);
 extern NCURSES_EXPORT(void) _nc_get_type (char *name);
 extern NCURSES_EXPORT(void) _nc_set_source (const char *const);
 extern NCURSES_EXPORT(void) _nc_set_type (const char *const);
-extern NCURSES_EXPORT(void) _nc_syserr_abort (const char *const,...) GCC_PRINTFLIKE(1,2) GCC_NORETURN;
+extern GCC_NORETURN NCURSES_EXPORT(void) _nc_syserr_abort (const char *const,...) GCC_PRINTFLIKE(1,2);
 extern NCURSES_EXPORT(void) _nc_warning (const char *const,...) GCC_PRINTFLIKE(1,2);
 extern NCURSES_EXPORT_VAR(bool) _nc_suppress_warnings;
 
 /* comp_scan.c */
 extern NCURSES_EXPORT_VAR(struct token)	_nc_curr_token;
+
+/* comp_userdefs.c */
+NCURSES_EXPORT(const struct user_table_entry *) _nc_get_userdefs_table (void);
+NCURSES_EXPORT(const HashData *) _nc_get_hash_user (void);
 
 /* captoinfo.c: capability conversion */
 extern NCURSES_EXPORT(char *) _nc_captoinfo (const char *, const char *, int const);
@@ -315,7 +337,8 @@ extern NCURSES_EXPORT_VAR(const struct tinfo_fkeys) _nc_tinfo_fkeys[];
 
 extern NCURSES_EXPORT_VAR(int) _nc_tparm_err;
 
-extern NCURSES_EXPORT(int) _nc_tparm_analyze(const char *, char **, int *);
+extern NCURSES_EXPORT(int) _nc_tparm_analyze(TERMINAL *, const char *, char **, int *);
+extern NCURSES_EXPORT(void) _nc_reset_tparm(TERMINAL *);
 
 /* lib_trace.c */
 extern NCURSES_EXPORT_VAR(unsigned) _nc_tracing;
@@ -340,22 +363,29 @@ extern NCURSES_EXPORT(int) _nc_tic_written (void);
 #endif /* NCURSES_INTERNALS */
 
 /*
- * These entrypoints are used by tack.
+ * These entrypoints were used by tack before 1.08.
  */
+
+#undef  NCURSES_TACK_1_08
+#ifdef  NCURSES_INTERNALS
+#define NCURSES_TACK_1_08 /* nothing */
+#else
+#define NCURSES_TACK_1_08 GCC_DEPRECATED("upgrade to tack 1.08")
+#endif
 
 /* comp_hash.c: name lookup */
 extern NCURSES_EXPORT(struct name_table_entry const *) _nc_find_entry
-	(const char *, const HashValue *);
-extern NCURSES_EXPORT(const HashValue *) _nc_get_hash_table (bool);
+	(const char *, const HashValue *) NCURSES_TACK_1_08;
+extern NCURSES_EXPORT(const HashValue *) _nc_get_hash_table (bool) NCURSES_TACK_1_08;
 
 /* comp_scan.c: lexical analysis */
-extern NCURSES_EXPORT(void) _nc_reset_input (FILE *, char *);
+extern NCURSES_EXPORT(void) _nc_reset_input (FILE *, char *) NCURSES_TACK_1_08;
 
 /* comp_expand.c: expand string into readable form */
-extern NCURSES_EXPORT(char *) _nc_tic_expand (const char *, bool, int);
+extern NCURSES_EXPORT(char *) _nc_tic_expand (const char *, bool, int) NCURSES_TACK_1_08;
 
 /* comp_scan.c: decode string from readable form */
-extern NCURSES_EXPORT(int) _nc_trans_string (char *, char *);
+extern NCURSES_EXPORT(int) _nc_trans_string (char *, char *) NCURSES_TACK_1_08;
 
 #endif /* NCURSES_TERM_ENTRY_H_incl */
 

@@ -1,5 +1,6 @@
 /****************************************************************************
- * Copyright (c) 1998-2015,2017 Free Software Foundation, Inc.              *
+ * Copyright 2018-2020,2021 Thomas E. Dickey                                *
+ * Copyright 1998-2015,2017 Free Software Foundation, Inc.                  *
  *                                                                          *
  * Permission is hereby granted, free of charge, to any person obtaining a  *
  * copy of this software and associated documentation files (the            *
@@ -32,7 +33,7 @@
  *     and: Thomas E. Dickey                        1998-on                 *
  ****************************************************************************/
 
-/* $Id: term_entry.h,v 1.55 2017/04/06 22:45:34 tom Exp $ */
+/* $Id: term_entry.h,v 1.61 2021/09/04 10:52:55 tom Exp $ */
 
 /*
  *	term_entry.h -- interface to entry-manipulation code
@@ -46,6 +47,7 @@
 extern "C" {
 #endif
 
+#include <ncurses/curses.h>
 #include <ncurses/term.h>
 
 /*
@@ -140,7 +142,7 @@ extern NCURSES_EXPORT_VAR(ENTRY *) _nc_tail;
 
 /*
  * Note that WANTED and PRESENT are not simple inverses!  If a capability
- * has been explicitly cancelled, it's not considered WANTED.
+ * has been explicitly cancelled, it is not considered WANTED.
  */
 #define WANTED(s)	((s) == ABSENT_STRING)
 #define PRESENT(s)	(((s) != ABSENT_STRING) && ((s) != CANCELLED_STRING))
@@ -198,8 +200,8 @@ extern NCURSES_EXPORT(bool) _nc_entry_match (char *, char *);
 extern NCURSES_EXPORT(int) _nc_resolve_uses (bool); /* obs 20040705 */
 extern NCURSES_EXPORT(int) _nc_resolve_uses2 (bool, bool);
 extern NCURSES_EXPORT(void) _nc_free_entries (ENTRY *);
-extern NCURSES_IMPEXP void NCURSES_API (*_nc_check_termtype)(TERMTYPE *); /* obs 20040705 */
-extern NCURSES_IMPEXP void NCURSES_API (*_nc_check_termtype2)(TERMTYPE2 *, bool);
+extern NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype)(TERMTYPE *); /* obs 20040705 */
+extern NCURSES_IMPEXP void (NCURSES_API *_nc_check_termtype2)(TERMTYPE2 *, bool);
 
 /* trace_xnames.c */
 extern NCURSES_EXPORT(void) _nc_trace_xnames (TERMTYPE *);
@@ -207,17 +209,24 @@ extern NCURSES_EXPORT(void) _nc_trace_xnames (TERMTYPE *);
 #endif /* NCURSES_INTERNALS */
 
 /*
- * These entrypoints are used by tack.
+ * These entrypoints were used by tack before 1.08.
  */
 
+#undef  NCURSES_TACK_1_08
+#ifdef  NCURSES_INTERNALS
+#define NCURSES_TACK_1_08 /* nothing */
+#else
+#define NCURSES_TACK_1_08 GCC_DEPRECATED("upgrade to tack 1.08")
+#endif
+
 /* alloc_ttype.c: elementary allocation code */
-extern NCURSES_EXPORT(void) _nc_copy_termtype (TERMTYPE *, const TERMTYPE *);
+extern NCURSES_EXPORT(void) _nc_copy_termtype (TERMTYPE *, const TERMTYPE *) NCURSES_TACK_1_08;
 
 /* lib_acs.c */
-extern NCURSES_EXPORT(void) _nc_init_acs (void);	/* corresponds to traditional 'init_acs()' */
+extern NCURSES_EXPORT(void) _nc_init_acs (void) NCURSES_TACK_1_08;	/* corresponds to traditional 'init_acs()' */
 
 /* free_ttype.c: elementary allocation code */
-extern NCURSES_EXPORT(void) _nc_free_termtype (TERMTYPE *);
+extern NCURSES_EXPORT(void) _nc_free_termtype (TERMTYPE *) NCURSES_TACK_1_08;
 
 #ifdef __cplusplus
 }
